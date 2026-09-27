@@ -1,0 +1,70 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# PyInstaller & Build artifacts
+build/
+dist/
+*.spec.bak
+*.manifest
+*.pkg
+
+# Database & local data (preserves privacy)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Logs & temp debug outputs
+*.log
+*.txt
+*.tmp
+!requirements.txt
+
+# Project Backups
+backup/
+
+# Unrelated project
+ISHDA_Project/
+
+# Scratch & Temporary files
+scratch/
+.system_generated/
+extracted_spans.json
+final_full_preview.html
+verify.html
+
+# Environment & secrets
+.env
+.env.*
+
+# Generated test PDFs & preview images in root (keep only essential assets)
+/*.png
+/*.pdf
+!/ad_dd_signature.png
+
+# Ignore test files in pdf_generator/
+pdf_generator/*.pdf
+pdf_generator/*_preview.png
+pdf_generator/FORM*.png
+pdf_generator/reference_sample.png
+pdf_generator/verify.html
+
+# Keep essential assets explicitly
+!pdf_generator/template.html
+!pdf_generator/package.json
+!pdf_generator/package-lock.json
+!pdf_generator/generate.js

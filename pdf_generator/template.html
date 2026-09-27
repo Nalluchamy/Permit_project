@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Permit Layout</title>
+    <style>
+        @page {
+            margin: 0;
+            size: A4;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 8.8px;
+            margin: 0;
+            padding: 0;
+            color: #000;
+            background: transparent;
+            overflow: hidden;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            box-sizing: border-box;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .permit-block {
+            height: 126.38mm;
+            width: 210mm;
+            box-sizing: border-box;
+            padding-top: 44.88mm;
+            padding-left: 23.5mm;
+            padding-right: 22.0mm;
+            position: relative;
+        }
+
+        .permit-block.bottom-block {
+            height: 148.5mm;
+            padding-top: 44.88mm;
+        }
+
+        .top-right-group {
+            position: absolute;
+            top: 17.5mm;
+            right: 23.44mm;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .header-serial {
+            font-size: 14px;
+            font-weight: bold;
+            color: #999;
+            margin-right: 2mm;
+        }
+
+        .qr-code {
+            width: 18.5mm;
+            height: 18.5mm;
+            /* No image-rendering override: browser uses default high-quality
+               bilinear downscaling which gives the sharpest result when a
+               high-resolution PNG (box_size=30) is scaled to 18.5 mm. */
+            background: #ffffff;
+            padding: 0.5mm;
+            box-sizing: border-box;
+        }
+
+        .hsn-dispatch-line {
+            position: absolute;
+            top: 41.3mm;
+            left: 23.5mm;
+            width: 164.5mm;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 9.5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            border: 1px solid #000;
+        }
+
+        td {
+            border: 1px solid #000;
+            padding: 0.5px 3px;
+            vertical-align: middle;
+            word-wrap: break-word;
+            height: 3.9mm;
+            font-size: 9.3px;
+        }
+
+        .label {
+            font-weight: bold;
+            font-size: 9.3px;
+        }
+
+        .value {
+            font-weight: bold;
+            letter-spacing: -0.1px;
+            font-size: 9.0px;
+        }
+
+        .sig-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .sig-img {
+            max-height: 8.5mm;
+            max-width: 38mm;
+        }
+
+        .center-label {
+            text-align: center;
+            vertical-align: middle;
+            font-weight: bold;
+        }
+
+        .address-cell {
+            vertical-align: top;
+            padding-top: 2px;
+        }
+
+        .dest-cell {
+            vertical-align: top;
+            padding-top: 2px;
+        }
+
+        .signature-cell {
+            height: 8.5mm;
+            vertical-align: top;
+            padding-top: 2px;
+        }
+
+        .header {
+            display: contents;
+        }
+
+        .permit-block.bottom-block .header {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+
+        <!-- ══════════════ TOP PERMIT BLOCK ══════════════ -->
+        <div class="permit-block">
+            <div class="header">
+                <div class="top-right-group">
+                    <span class="header-serial">{{serial_no}}</span>
+                    <img class="qr-code" src="{{qr_code_url}}" alt="QR" />
+                </div>
+                <div class="hsn-dispatch-line">
+                    <span>HSN Code:{{hsn_code}}</span>
+                    <span>Date &amp; Time Of Dispatch: {{dispatch_datetime}}</span>
+                </div>
+            </div>
+
+            <table>
+                <colgroup>
+                    <col style="width:25%">
+                    <col style="width:25%">
+                    <col style="width:25%">
+                    <col style="width:25%">
+                </colgroup>
+
+                <tr>
+                    <td><span class="label">Lessee Id : </span><span class="value">{{lessee_id}}</span></td>
+                    <td><span class="label">Minecode : </span><span class="value">{{minecode}}</span></td>
+                    <td><span class="label">Lease Area Details</span></td>
+                    <td><span class="label">Serial No: </span><em><span class="value"
+                                style="color:#999">{{serial_no}}</span></em></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Lessee Name and Address:</span></td>
+                    <td><span class="value">{{lessee_name}}</span></td>
+                    <td><span class="label">District Name:</span></td>
+                    <td><span class="value">{{district}}</span></td>
+                </tr>
+
+                <tr>
+                    <td class="address-cell" colspan="2" rowspan="3"><span class="value">{{lessee_address}}</span></td>
+                    <td><span class="label">Taluk Name:</span></td>
+                    <td><span class="value">{{taluk}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Village:</span></td>
+                    <td><span class="value">{{village}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">SF.No / Extent:</span></td>
+                    <td><span class="value">{{sf_no}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Mineral Name: </span><span class="value">{{mineral}}</span></td>
+                    <td><span class="label">Bulk Permit No : </span><span class="value">{{bulk_permit}}</span></td>
+                    <td><span class="label">Classification:</span></td>
+                    <td><span class="value">{{classification}}</span></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"><span class="label">Order Ref: </span><span class="value">{{order_ref}}</span></td>
+                    <td><span class="label">Lease Period:</span></td>
+                    <td><span class="value">{{lease_period}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Dispatch Slip No:</span></td>
+                    <td><span class="value">{{dispatch_slip}}</span></td>
+                    <td><span class="label">Within Tamil Nadu:</span></td>
+                    <td><span class="value">{{within_tn}}</span></td>
+                </tr>
+
+                <tr>
+                    <td class="label">Delivered To:</td>
+                    <td class="value" colspan="3">{{delivered_to}}</td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Vehicle No:</span></td>
+                    <td><span class="value">{{vehicle_no}}</span></td>
+                    <td colspan="2"><span class="label">Destination Address:</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Vehicle Type:</span></td>
+                    <td><span class="value">{{vehicle_type}}</span></td>
+                    <td colspan="2" rowspan="4" class="dest-cell"><span class="value">{{destination}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Total Distance In (Kms)</span></td>
+                    <td><span class="value">{{distance}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Traveling Date:</span></td>
+                    <td><span class="value">{{traveling_date_full}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Required Time:</span></td>
+                    <td><span class="value">{{req_hours_full}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Quantity (in MT)</span></td>
+                    <td><span class="value">{{quantity}}</span></td>
+                    <td><span class="label">Driver Name:</span></td>
+                    <td><span class="value">{{driver_name}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Driver License No:</span></td>
+                    <td><span class="value">{{driver_license}}</span></td>
+                    <td><span class="label">Via:</span></td>
+                    <td><span class="value">{{via}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><span class="label">Driver Phone No:</span></td>
+                    <td><span class="value">{{driver_phone}}</span></td>
+                    <td><span class="label">Lease / Authorized Person Name:</span></td>
+                    <td><span class="value">{{auth_person}}</span></td>
+                </tr>
+
+                <tr>
+                    <td class="signature-cell"><span class="label">Driver Signature:</span></td>
+                    <td class="signature-cell"></td>
+                    <td class="signature-cell"><span class="label">Signature of AD / DD:</span></td>
+                    <td class="signature-cell">
+                        <div class="sig-container">
+                            {{signature_img_tag}}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+
+        <!-- ══════════════ BOTTOM PERMIT BLOCK ══════════════ -->
+        <div class="permit-block bottom-block">
+            <div class="header">
+                <div class="top-right-group">
+                    <span class="header-serial">{{serial_no}}</span>
+                    <img class="qr-code" src="{{qr_code_url}}" alt="QR" />
+                </div>
+                <div class="hsn-dispatch-line">
+                    <span>HSN Code:{{hsn_code}}</span>
+                    <span>Date &amp; Time Of Dispatch: {{dispatch_datetime}}</span>
+                </div>
+            </div>
+
+            <table>
+                <colgroup>
+                    <col style="width:25%">
+                    <col style="width:25%">
+                    <col style="width:25%">
+                    <col style="width:25%">
+                </colgroup>
+                <tr>
+                    <td><span class="label">Lessee Id : </span><span class="value">{{lessee_id}}</span></td>
+                    <td><span class="label">Minecode : </span><span class="value">{{minecode}}</span></td>
+                    <td><span class="label">Lease Area Details</span></td>
+                    <td><span class="label">Serial No: </span><em><span class="value"
+                                style="color:#999">{{serial_no}}</span></em></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Lessee Name and Address:</span></td>
+                    <td><span class="value">{{lessee_name}}</span></td>
+                    <td><span class="label">District Name:</span></td>
+                    <td><span class="value">{{district}}</span></td>
+                </tr>
+                <tr>
+                    <td class="address-cell" colspan="2" rowspan="3"><span class="value">{{lessee_address}}</span></td>
+                    <td><span class="label">Taluk Name:</span></td>
+                    <td><span class="value">{{taluk}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Village:</span></td>
+                    <td><span class="value">{{village}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">SF.No / Extent:</span></td>
+                    <td><span class="value">{{sf_no}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Mineral Name: </span><span class="value">{{mineral}}</span></td>
+                    <td><span class="label">Bulk Permit No : </span><span class="value">{{bulk_permit}}</span></td>
+                    <td><span class="label">Classification:</span></td>
+                    <td><span class="value">{{classification}}</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><span class="label">Order Ref: </span><span class="value">{{order_ref}}</span></td>
+                    <td><span class="label">Lease Period:</span></td>
+                    <td><span class="value">{{lease_period}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Dispatch Slip No:</span></td>
+                    <td><span class="value">{{dispatch_slip}}</span></td>
+                    <td><span class="label">Within Tamil Nadu:</span></td>
+                    <td><span class="value">{{within_tn}}</span></td>
+                </tr>
+                <tr>
+                    <td class="label">Delivered To:</td>
+                    <td class="value" colspan="3">{{delivered_to}}</td>
+                </tr>
+                <tr>
+                    <td><span class="label">Vehicle No:</span></td>
+                    <td><span class="value">{{vehicle_no}}</span></td>
+                    <td colspan="2"><span class="label">Destination Address:</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Vehicle Type:</span></td>
+                    <td><span class="value">{{vehicle_type}}</span></td>
+                    <td colspan="2" rowspan="4" class="dest-cell"><span class="value">{{destination}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Total Distance In (Kms)</span></td>
+                    <td><span class="value">{{distance}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Traveling Date:</span></td>
+                    <td><span class="value">{{traveling_date_full}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Required Time:</span></td>
+                    <td><span class="value">{{req_hours_full}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Quantity (in MT)</span></td>
+                    <td><span class="value">{{quantity}}</span></td>
+                    <td><span class="label">Driver Name:</span></td>
+                    <td><span class="value">{{driver_name}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Driver License No:</span></td>
+                    <td><span class="value">{{driver_license}}</span></td>
+                    <td><span class="label">Via:</span></td>
+                    <td><span class="value">{{via}}</span></td>
+                </tr>
+                <tr>
+                    <td><span class="label">Driver Phone No:</span></td>
+                    <td><span class="value">{{driver_phone}}</span></td>
+                    <td><span class="label">Lease / Authorized Person Name:</span></td>
+                    <td><span class="value">{{auth_person}}</span></td>
+                </tr>
+                <tr>
+                    <td class="signature-cell"><span class="label">Driver Signature:</span></td>
+                    <td class="signature-cell"></td>
+                    <td class="signature-cell"><span class="label">Signature of AD / DD:</span></td>
+                    <td class="signature-cell">
+                        <div class="sig-container">
+                            {{signature_img_tag}}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</body>
+
+</html>

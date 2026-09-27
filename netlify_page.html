@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permit Verification</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #eef1f5; 
+            color: #475569; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        .line {
+            margin-bottom: 2px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div id="content"></div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const content = document.getElementById('content');
+        
+        function get(key) { return params.get(key) || ''; }
+
+        const serial = get('serial');
+        const slip = get('slip');
+        const minecode = get('minecode');
+        const date = get('date');
+        const vehicle = get('vehicle');
+        const mineral = get('mineral');
+        const distance = get('distance');
+        const reqtime = get('reqtime');
+        const dest = get('dest');
+
+        // Split Minecode: first 3 chars on line 1, rest on line 2
+        const m1 = minecode.substring(0, 3);
+        const m2 = minecode.substring(3);
+
+        // Split Vehicle: first 4 chars on line 3, rest on line 4
+        // (Assuming format like TN56 J7212 or TN56J7212)
+        const v_clean = vehicle.replace(/\s/g, '');
+        const v1 = v_clean.substring(0, 4);
+        const v2 = v_clean.substring(4);
+
+        // Lines construction
+        const lines = [
+            `${serial},${slip},${m1}`,
+            `${m2},${date}`,
+            `${distance}kms,${reqtime}hrs,${mineral},${v1}`,
+            `${v2},${dest}`
+        ];
+
+        lines.forEach(text => {
+            const div = document.createElement('div');
+            div.className = 'line';
+            div.textContent = text;
+            content.appendChild(div);
+        });
+    </script>
+</body>
+</html>
